@@ -15,6 +15,8 @@ const getRandomNumber = (min, max) => getRandomDecimal(min, max);
 
 const isLenght = (string, length) => string.length <= length;
 
+const findDataElementById = (id, data) => data.find((dataElement) => dataElement.id === id);
+
 const getZeroBasedStringNumber = (number) => number < 10 ? `0${number}` : `${number}`;
 
 const getRandomArrayIndex = (elements) => getRandomNumber(0, elements.length - 1);
@@ -43,4 +45,4 @@ const debounce = (cb, delay) => {
   };
 };
 
-export { isLenght, getLatLngString, getRandomArrayElement, createRandomElementsArray, getZeroBasedStringNumber, getRandomNumber, debounce };
+export { isLenght, getLatLngString, getRandomArrayElement, createRandomElementsArray, getZeroBasedStringNumber, getRandomNumber, debounce, findDataElementById };
