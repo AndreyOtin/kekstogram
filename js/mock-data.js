@@ -25,7 +25,7 @@ const createDataFiller = ({ids, photos}) => (_, i) => {
     comments: Array.from({ length: avatarNumbers.length }, (__, j) => ({
       id: j,
       avatar: `img/avatar-${avatarNumbers[j]}.svg`,
-      message: createRandomElementsArray(MESSAGES, getRandomNumber(1, 2)),
+      message: createRandomElementsArray(MESSAGES, getRandomNumber(1, 2)).join(' '),
       name: NAMES[avatarNumbers[j] - 1]
     }))
   };
