@@ -43,4 +43,4 @@ const debounce = (cb, delay) => {
   };
 };
 
-export { getRandomArrayElement, createRandomElementsArray, getZeroBasedStringNumber, getRandomNumber, debounce };
+export { isLenght, getLatLngString, getRandomArrayElement, createRandomElementsArray, getZeroBasedStringNumber, getRandomNumber, debounce };
