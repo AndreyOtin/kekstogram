@@ -12,4 +12,6 @@ const createComment = (avatar, name, message) =>
 const createComments = (comments) =>
   comments.map(({ avatar, name, message }) => createComment(avatar, name, message)).join('');
 
-export { createComments };
+const createSocialCommentsElement = (count, allCount) => `<div class="social__comment-count">${count} из <span class="comments-count">${allCount}</span> комментариев</div>`;
+
+export { createComments, createSocialCommentsElement };
