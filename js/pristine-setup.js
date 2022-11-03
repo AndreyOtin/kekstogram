@@ -1,98 +1,88 @@
-import { QuerySelector } from './dom-util.js';
+import { isLenght } from './util.js';
 
-const adFormElement = document.querySelector(QuerySelector.CLASS_NAME.AD_FORM);
+const formElement = document.querySelector('.img-upload__form');
+const hashTagInputElement = formElement.querySelector('.text__hashtags');
+const textAreaELement = formElement.querySelector('.text__description');
 
-const adFormConfig = {
-  classTo: 'ad-form__element',
-  errorClass: 'ad-form__element--invalid',
-  errorTextParent: 'ad-form__element',
-  errorTextTag: 'span',
+const formConfig = {
+  classTo: 'img-upload__field-wrapper',
+  errorTextParent: 'img-upload__field-wrapper',
+  errorTextTag: 'div',
 };
 
-const getRequiredMessage = () => 'Это поле обязательно для заполнения';
-
-const adFormValidatorData = {
-  titleField: {
-    minLength: 30,
-    maxLength: 100,
-    element: adFormElement.querySelector(QuerySelector.ID.TITLE),
-    validator: function (value) {
-      return value.trim() && this.minLength <= value.length && value.length <= this.maxLength;
+const formValidatorData = {
+  hashField: {
+    currentRegExpToMessageKey: 0,
+    element: hashTagInputElement,
+    regExpToMessage: {
+      0: 'хэштэг должен начинаться с #',
+      1: 'хештег должен содержать хотя бы одну цифру или букву',
+      2: 'после решётки только буквы и числа',
+      3: 'максимальная длина хештега 20 символов',
+      4: 'допускается 1 пробел между хэштегами',
+      5: 'максимальное количество хэштегов 5',
+      6: 'хэштэги должны быть уникальны'
     },
-    messageHandler: function (value) {
+    regExps: [/^[^#]|(?<=\s)[^\s#]/i,
+      /(?<!.)#(?![а-яa-z0-9])|(?<=\s)#(?![а-яa-z0-9])/i,
+      /#[а-яa-z0-9]+?[^\sа-яa-z0-9]+/i,
+      /([а-яa-z0-9]{19,})/i,
+      /\s{2,}/i,
+      /(#\b[а-яa-z0-9]{1,20}\b\s){5,}/i
+    ],
+    testRegExps: function (value) {
+      return this.regExps.every((exp, i) => {
+        if (exp.test(value)) {
+          this.currentRegExpToMessageKey = i;
+          return false;
+        }
+        return true;
+      });
+    },
+    isUniqueHashs: function (value) {
+      return value.split(' ').every((tag, i, tags) => {
+        if (tags.includes(tag, i + 1)) {
+          this.currentRegExpToMessageKey = 6;
+          return false;
+        }
+        return true;
+      });
+    },
+    validationHandler: function (value) {
       if (!value.trim()) {
-        return getRequiredMessage();
+        return true;
       }
-
-      return `Объявление должно быть минимум ${this.minLength} максимум ${this.maxLength} символов. Введено:${value.length}`;
+      return this.testRegExps(value) && this.isUniqueHashs(value);
     },
+    messageHandler: function () {
+      return this.regExpToMessage[this.currentRegExpToMessageKey];
+    }
   },
-  priceField: {
-    minPrice: 0,
-    maxPrice: 100000,
-    element: adFormElement.querySelector(QuerySelector.ID.PRICE),
-    validator: function (value) {
-      this.minPrice = +this.element.min;
-      return value && this.minPrice <= +this.element.value && +this.element.value <= this.maxPrice;
+  commentField: {
+    maxLength: 140,
+    element: textAreaELement,
+    validationHandler: function (value) {
+      if (!value.trim()) {
+        return true;
+      }
+      return isLenght(value, this.maxLength);
     },
     messageHandler: function (value) {
-      if (!value) {
-        return getRequiredMessage();
-      }
-
-      return `Введите цену от ${this.minPrice} до ${this.maxPrice} руб`;
-    },
-  },
-  addressField: {
-    element: adFormElement.querySelector(QuerySelector.ID.ADDRESS),
-    validator: function (value) {
-      return !!value;
-    },
-    messageHandler: function (value) {
-      if (!value) {
-        return 'Задайте координаты с помощью ползунка';
-      }
-    },
-  },
-  roomNumberField: {
-    element: adFormElement.querySelector(QuerySelector.ID.ROOM_NUMBER),
-    connectedElement: adFormElement.querySelector(QuerySelector.ID.CAPASITY),
-    roomToMessage: {
-      1: '«для 1 гостя»',
-      2: '«для 2 гостей» или «для 1 гостя»',
-      3: '«для 3, 2 гостей» или «для 1 гостя»',
-      100: '«не для гостей»',
-    },
-    validator: function (value) {
-      // Выбрано 100 комнат и любое кол-во гостей кроме не для гостей
-      if (+value === 100 && +this.connectedElement.value !== 0) {
-        return false;
-      }
-
-      // Выбрано не для гостей и любое кол-во комнат кроме 100
-      if (!+this.connectedElement.value && +value !== 100) {
-        return false;
-      }
-
-      // Оcтальные случаи
-      return +value >= +this.connectedElement.value;
-    },
-    messageHandler: function (value) {
-      return `${this.roomToMessage[value]}`;
-    },
-  },
+      return `Максимальная длина комментария ${this.maxLength}. Введено ${value.length}`;
+    }
+  }
 };
 
 const createPristine = (validatorData, form, config) => {
-  const pristine = new Pristine(form, config);
+  const pristineInstance = new Pristine(form, config);
 
-  Object.values(validatorData).forEach(({ validator, messageHandler, ...rest }) => {
-    pristine.addValidator(rest.element, validator.bind(rest), messageHandler.bind(rest), 100, true);
+  Object.values(validatorData).forEach(({ validationHandler, messageHandler, ...rest }) => {
+    pristineInstance.addValidator(rest.element, validationHandler.bind(rest), messageHandler.bind(rest), 100, true);
   });
 
-  return pristine;
+  return pristineInstance;
 };
 
-const adFormPristine = createPristine(adFormValidatorData, adFormElement, adFormConfig);
+const pristine = createPristine(formValidatorData, formElement, formConfig);
 
-export { adFormPristine };
+export { pristine };
