@@ -1,5 +1,6 @@
 import { toggleClass, isEscapeKey } from './dom-util.js';
 import { pristine } from './pristine-setup.js';
+import { setScaleControlClick, resetScaleControl } from './scale.js';
 
 const formElement = document.querySelector('.img-upload__form');
 const fileUploadElement = formElement.querySelector('#upload-file');
@@ -24,12 +25,14 @@ const closeForm = () => {
   toggleClass(document.body, 'model-open');
   removeFormEscKeydown();
   resetForm();
+  resetScaleControl();
 };
 
 const openForm = () => {
   toggleClass(overlayElement, 'hidden');
   toggleClass(document.body, 'model-open');
   setFormEscKeydown();
+  resetScaleControl();
 };
 
 function formEscKeydownHandler(evt) {
@@ -81,6 +84,11 @@ const setFormEventListeners = () => {
   setFormEscdown();
   setFormSubmit();
   setHashTagBlur(pristine);
+  setScaleControlClick();
 };
 
-export { setFormEventListeners };
+const setInitialFormValues = () => {
+  resetScaleControl();
+};
+
+export { setFormEventListeners, setInitialFormValues };
