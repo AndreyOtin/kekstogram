@@ -1,55 +1,62 @@
 import { toggleClass, isEscapeKey } from './dom-util.js';
 import { pristine } from './pristine-setup.js';
 import { setScaleControlClick, resetScaleControl } from './scale.js';
+import { setEffectsChange, applyFilterStyle, clearFilterStyle } from './filters.js';
+import { setSliderSlide, hideSlider, createSlider, resetSlider } from './slider.js';
 
 const formElement = document.querySelector('.img-upload__form');
 const fileUploadElement = formElement.querySelector('#upload-file');
 const overlayElement = formElement.querySelector('.img-upload__overlay');
 const formCloseButtonElement = formElement.querySelector('.img-upload__cancel');
 const hashTagInputElement = formElement.querySelector('.text__hashtags');
-const textAreaELement = formElement.querySelector('.text__description');
+const imgPreviewElement = formElement.querySelector('.img-upload__preview img');
+
+let currentFilterClass;
 
 const removeFormEscKeydown = () => document.removeEventListener('keydown', formEscKeydownHandler);
 
 const setFormEscKeydown = () => document.addEventListener('keydown', formEscKeydownHandler);
 
-const resetForm = () => {
-  fileUploadElement.value = '';
-  hashTagInputElement.value = '';
-  textAreaELement.value = '';
-  pristine.reset();
-};
-
 const closeForm = () => {
   toggleClass(overlayElement, 'hidden');
   toggleClass(document.body, 'model-open');
-  removeFormEscKeydown();
-  resetForm();
-  resetScaleControl();
 };
 
 const openForm = () => {
   toggleClass(overlayElement, 'hidden');
   toggleClass(document.body, 'model-open');
-  setFormEscKeydown();
-  resetScaleControl();
+
 };
 
 function formEscKeydownHandler(evt) {
   if (isEscapeKey(evt)) {
-    closeForm();
+    formCloseButtonElement.click();
   }
 }
+
+const changePreviewClass = (effectType) => {
+  imgPreviewElement.classList.remove(currentFilterClass);
+  currentFilterClass = `effects__preview--${effectType}`;
+  imgPreviewElement.classList.add(currentFilterClass);
+};
 
 const setCloseButtonClick = () => {
   formCloseButtonElement.addEventListener('click', () => {
     closeForm();
+    removeFormEscKeydown();
+    pristine.reset();
+    resetScaleControl();
+    resetSlider();
+    clearFilterStyle();
+    changePreviewClass('none');
   });
 };
 
 const setFileUploadChange = () => {
   fileUploadElement.addEventListener('change', () => {
     openForm();
+    setFormEscKeydown();
+    resetScaleControl();
   });
 };
 
@@ -62,7 +69,9 @@ const setHashTagBlur = () => {
 
 const setFormEscdown = () => {
   formElement.addEventListener('keydown', (evt) => {
-    if (isEscapeKey(evt)) {
+    if (isEscapeKey(evt) &&
+      evt.target.className === 'text__description' ||
+      evt.target.className === 'text__hashtags') {
       evt.stopPropagation();
     }
   });
@@ -73,7 +82,6 @@ const setFormSubmit = () => {
     evt.preventDefault();
     if (pristine.validate()) {
       evt.target.submit();
-      resetForm();
     }
   });
 };
@@ -85,10 +93,14 @@ const setFormEventListeners = () => {
   setFormSubmit();
   setHashTagBlur(pristine);
   setScaleControlClick();
+  setEffectsChange(changePreviewClass);
+  setSliderSlide(applyFilterStyle);
 };
 
-const setInitialFormValues = () => {
+const setInitialFormState = () => {
   resetScaleControl();
+  createSlider();
+  hideSlider();
 };
 
-export { setFormEventListeners, setInitialFormValues };
+export { setFormEventListeners, setInitialFormState };
