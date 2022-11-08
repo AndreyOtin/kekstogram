@@ -1,15 +1,6 @@
 const ALERT_SHOW_TIME = 5000;
 
-const ClassModifier = {
-  HIDDEN: 'hidden',
-  DISABLED: 'disabled'
-};
-
 const toggleClass = (element, className) => element.classList.toggle(className);
-
-const createClassName = (querySelector, modifer) => modifer
-  ? `${querySelector}--${modifer}`.slice(1)
-  : `${querySelector}`.slice(1);
 
 const toggleDisabledState = (elements) => {
   if (elements.length && elements.length > 0) {
@@ -46,4 +37,4 @@ const showAlert = (message, container) => {
   }, ALERT_SHOW_TIME);
 };
 
-export { toggleClass, createClassName, toggleDisabledState, isEscapeKey, showAlert, ClassModifier };
+export { toggleClass, toggleDisabledState, isEscapeKey, showAlert};

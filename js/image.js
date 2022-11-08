@@ -9,5 +9,4 @@ const showImg = (file, img) => {
   }
 };
 
-
 export { showImg };

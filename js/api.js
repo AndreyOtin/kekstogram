@@ -13,7 +13,7 @@ const getData = (onSuccess, onError) => {
       throw new Error('Произошла ошибка загрузки данных');
     })
     .then((data) => onSuccess(data))
-    .catch((error) => onError(error));
+    .catch((error) => onError(error.message));
 };
 
 const sendData = (onSuccess, onError, body) => {
