@@ -4,7 +4,7 @@ import { showBigPicture, setBigPictureEventListeners } from './big-picture.js';
 import { findDataElementById, debounce } from './util.js';
 import { setFormEventListeners, setInitialFormState } from './form.js';
 import { showAlert } from './dom-util.js';
-import { showFilters, setFilterClick } from './filter.js';
+import { showFilters, setFilterClick } from './sort.js';
 
 const DEBOUNCE_DELAY = 500;
 
