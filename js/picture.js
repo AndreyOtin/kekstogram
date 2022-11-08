@@ -34,4 +34,4 @@ const setPictureClick = (cb) => {
   });
 };
 
-export { renderPictures, setPictureClick };
+export { renderPictures, setPictureClick, pictureContainerElement };
