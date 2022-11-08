@@ -37,11 +37,13 @@ const showAlert = (message, container) => {
 
   alertContainer.textContent = message;
 
+  container.style.position = 'relative';
   container.append(alertContainer);
 
   setTimeout(() => {
     alertContainer.remove();
+    container.style.position = '';
   }, ALERT_SHOW_TIME);
 };
 
-export { toggleClass, createClassName, toggleDisabledState, isEscapeKey, showAlert, ClassModifier};
+export { toggleClass, createClassName, toggleDisabledState, isEscapeKey, showAlert, ClassModifier };
