@@ -3,7 +3,7 @@ import { toggleClass } from './dom-util.js';
 const commentLoaderElement = document.querySelector('.comments-loader');
 const commentsContainerElement = document.querySelector('.social__comments');
 
-const NUMBER_OF_COMMENTS = 2;
+const NUMBER_OF_COMMENTS = 5;
 
 let renderedCommentsCount = 0;
 
