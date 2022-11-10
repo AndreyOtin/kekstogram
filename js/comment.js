@@ -5,7 +5,7 @@ const commentsContainerElement = document.querySelector('.social__comments');
 
 const NUMBER_OF_COMMENTS = 5;
 
-let commentsStart = -5;
+let commentsStart = -NUMBER_OF_COMMENTS;
 let commentsEnd = 0;
 
 const createComment = (avatar, name, message) =>
