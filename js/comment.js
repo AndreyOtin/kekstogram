@@ -5,8 +5,8 @@ const commentsContainerElement = document.querySelector('.social__comments');
 
 const NUMBER_OF_COMMENTS = 5;
 
-let commentsStart = -NUMBER_OF_COMMENTS;
-let commentsEnd = 0;
+let commentsStart = 0;
+let commentsEnd = NUMBER_OF_COMMENTS;
 
 const createComment = (avatar, name, message) =>
   `<li class="social__comment">
@@ -25,8 +25,8 @@ const createComments = (comments) =>
 const createSocialCommentsElement = (count, allCount) => `<div class="social__comment-count">${count} из <span class="comments-count">${allCount}</span> комментариев</div>`;
 
 const resetComments = () => {
-  commentsEnd = 0;
-  commentsStart = -5;
+  commentsStart = 0;
+  commentsEnd = NUMBER_OF_COMMENTS;
 };
 
 const clearComments = () => {
@@ -37,9 +37,6 @@ const clearComments = () => {
 const removeSocialCommentsElement = () => commentsContainerElement.previousElementSibling.remove();
 
 const renderComments = (comments) => {
-  commentsStart += NUMBER_OF_COMMENTS;
-  commentsEnd += NUMBER_OF_COMMENTS;
-
   if (comments.length < commentsEnd) {
     commentsEnd = comments.length;
     toggleClass(commentLoaderElement, 'hidden');
@@ -47,6 +44,9 @@ const renderComments = (comments) => {
 
   commentsContainerElement.insertAdjacentHTML('beforebegin', createSocialCommentsElement(commentsEnd, comments.length));
   commentsContainerElement.insertAdjacentHTML('beforeend', createComments(comments.slice(commentsStart, commentsEnd)));
+
+  commentsStart += NUMBER_OF_COMMENTS;
+  commentsEnd += NUMBER_OF_COMMENTS;
 };
 
 const toggleCommentLoaderHiddenState = () => {
