@@ -1,5 +1,5 @@
 import { toggleClass, isEscapeKey } from './dom-util.js';
-import { renderComments, clearComments, resetComments, toggleCommentLoaderHiddenState } from './comment.js';
+import { renderComments, clearComments, resetComments, toggleCommentLoaderHiddenState, removeSocialCommentsElement } from './comment.js';
 
 const bigPictureElement = document.querySelector('.big-picture ');
 const imgElement = bigPictureElement.querySelector('.big-picture__img img');
@@ -51,7 +51,7 @@ const setBigPictureClose = () => {
 
 const setCommentLoaderClick = () => {
   commentLoaderElement.addEventListener('click', () => {
-    clearComments();
+    removeSocialCommentsElement();
     renderComments(currentComments);
   });
 };

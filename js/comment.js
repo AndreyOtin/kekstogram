@@ -5,7 +5,8 @@ const commentsContainerElement = document.querySelector('.social__comments');
 
 const NUMBER_OF_COMMENTS = 5;
 
-let renderedCommentsCount = 0;
+let commentsStart = -5;
+let commentsEnd = 0;
 
 const createComment = (avatar, name, message) =>
   `<li class="social__comment">
@@ -24,7 +25,8 @@ const createComments = (comments) =>
 const createSocialCommentsElement = (count, allCount) => `<div class="social__comment-count">${count} из <span class="comments-count">${allCount}</span> комментариев</div>`;
 
 const resetComments = () => {
-  renderedCommentsCount = 0;
+  commentsEnd = 0;
+  commentsStart = -5;
 };
 
 const clearComments = () => {
@@ -32,20 +34,20 @@ const clearComments = () => {
   commentsContainerElement.previousElementSibling.remove();
 };
 
+const removeSocialCommentsElement = () => commentsContainerElement.previousElementSibling.remove();
+
 const renderComments = (comments) => {
+  commentsStart += NUMBER_OF_COMMENTS;
+  commentsEnd += NUMBER_OF_COMMENTS;
 
-  renderedCommentsCount = renderedCommentsCount + NUMBER_OF_COMMENTS > comments.length
-    ? comments.length
-    : renderedCommentsCount + NUMBER_OF_COMMENTS;
-
-  if (comments.length === renderedCommentsCount) {
+  if (comments.length < commentsEnd) {
+    commentsEnd = comments.length;
     toggleClass(commentLoaderElement, 'hidden');
   }
 
-  commentsContainerElement.insertAdjacentHTML('beforebegin', createSocialCommentsElement(renderedCommentsCount, comments.length));
-  commentsContainerElement.insertAdjacentHTML('beforeend', createComments(comments.slice(0, renderedCommentsCount)));
+  commentsContainerElement.insertAdjacentHTML('beforebegin', createSocialCommentsElement(commentsEnd, comments.length));
+  commentsContainerElement.insertAdjacentHTML('beforeend', createComments(comments.slice(commentsStart, commentsEnd)));
 };
-
 
 const toggleCommentLoaderHiddenState = () => {
   if (commentLoaderElement.classList.contains('hidden')) {
@@ -53,4 +55,4 @@ const toggleCommentLoaderHiddenState = () => {
   }
 };
 
-export { renderComments, clearComments, resetComments, toggleCommentLoaderHiddenState};
+export { renderComments, clearComments, resetComments, toggleCommentLoaderHiddenState, removeSocialCommentsElement };
