@@ -18,7 +18,10 @@ const defaultImg = imgPreviewElement.src;
 
 let currentFilterClass;
 
-const removeFormEscKeydown = () => document.removeEventListener('keydown', formEscKeydownHandler);
+const removeFormEscKeydown = () => {
+  document.removeEventListener('keydown', formEscKeydownHandler);
+};
+
 
 const setFormEscKeydown = () => document.addEventListener('keydown', formEscKeydownHandler);
 
@@ -34,6 +37,10 @@ const openForm = () => {
 };
 
 function formEscKeydownHandler(evt) {
+  if (document.body.lastChild.classList && document.body.lastChild.classList.contains('error')) {
+    return;
+  }
+
   if (isEscapeKey(evt)) {
     formCloseButtonElement.click();
   }
@@ -48,7 +55,6 @@ const changePreviewClass = (effectType) => {
 const setCloseButtonClick = () => {
   formCloseButtonElement.addEventListener('click', (evt) => {
     evt.stopPropagation();
-
     closeForm();
     removeFormEscKeydown();
     pristine.reset();
